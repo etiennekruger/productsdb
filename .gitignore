@@ -2,6 +2,7 @@
 .*.swp
 bin
 *.pyc
+.ve/*
 django/search_index/*
 django/sarpaminfohub/search_index/*
 django/sarpaminfohub/local_settings.py
