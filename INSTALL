@@ -1,0 +1,8 @@
+Required:
+- vritualenv
+- pip
+
+Instructions:
+- Clone the repository.
+- Change into the base 'productsdb' directory.
+- ./deploy.sh will create the virtualenv and install the requirements using pip.
