@@ -6,6 +6,7 @@ class Formulation(models.Model):
     name = models.CharField(max_length=200)
     generic_name = models.CharField(max_length=50)
     strength = models.CharField(max_length=50)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def get_url(self):
         return reverse('formulation-by-id', args=[str(self.id), ""])
@@ -24,6 +25,7 @@ class Formulation(models.Model):
 class Country(models.Model):
     code = models.CharField(max_length=2, primary_key=True)
     name = models.CharField(max_length=200)
+    last_modified = models.DateTimeField(auto_now=True)
     
     def get_record(self):
         record = {}
@@ -35,12 +37,14 @@ class Country(models.Model):
     
 class Incoterm(models.Model):
     name = models.CharField(max_length=200)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return self.name
     
 class Manufacturer(models.Model):
     name = models.CharField(max_length=200)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def get_record(self):
         record = {}
@@ -52,6 +56,7 @@ class Manufacturer(models.Model):
 
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def get_url(self):
         return reverse('suppliers', args=[str(self.id), ""])
@@ -83,6 +88,7 @@ class Price(models.Model):
                                          related_name='supplier_country',
                                          null=True)
     supplier = models.ForeignKey(Supplier, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def get_record(self):
         record = {}
@@ -139,6 +145,7 @@ class ExchangeRate(models.Model):
     symbol = models.CharField(max_length=3)
     year = models.IntegerField()
     rate = models.FloatField()
+    last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return "%s (%s)" % (self.symbol, self.year)
@@ -147,6 +154,7 @@ class MSHPrice(models.Model):
     formulation = models.OneToOneField(Formulation)
     period = models.IntegerField()
     price = models.DecimalField(max_digits=20, decimal_places=6, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return "%s (%s)" % (self.formulation, self.period)
@@ -157,6 +165,7 @@ class Product(models.Model):
     packaging = models.CharField(max_length=100)
     unit_of_issue = models.CharField(max_length=100)
     who_prequalified = models.BooleanField()
+    last_modified = models.DateTimeField(auto_now=True)
 
     def get_record(self):
         record = {}
@@ -179,6 +188,7 @@ class ProductRegistration(models.Model):
     supplier = models.ForeignKey(Supplier, null=True)
     country = models.ForeignKey(Country)
     manufacturer = models.ForeignKey(Manufacturer, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return "%s (%s)" % (self.product, self.country)
