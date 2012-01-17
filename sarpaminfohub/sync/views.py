@@ -1,7 +1,9 @@
 from django.db.models import get_model
+from django.db.models import DecimalField, ForeignKey, OneToOneField
 from django.core.serializers import serialize
 from django.http import HttpResponse, Http404
 from django.utils import simplejson
+from django.views.decorators.csrf import csrf_exempt
 
 from utils import *
 from models import EXPORT_MODELS, Deleted
@@ -22,6 +24,7 @@ def list(request):
         response.append([model._meta.app_label, model._meta.object_name.lower()])
     return HttpResponse(simplejson.dumps(response), mimetype='application/json')    
 
+@csrf_exempt
 def model(request, app, model):
     """ Server side implementaion of the persistence.sync.js protocol for
     synchronizing a remote HTML5 database to the local database.
@@ -35,8 +38,10 @@ def model(request, app, model):
         timestamp = to_epoch()
         # POST requests get a fake OK response.
         if (request.method == 'POST'):
+            print request.POST
             response = { 'status': 'ok', 'now': timestamp }
             return HttpResponse(simplejson.dumps(response), mimetype='application/json')
+        print 'Sending all %s since %s' % (model, since)
         fields = [field.name for field in model._meta.fields]
         # Objects with no 'last_modified' will send the all() queryset.
         if since and 'last_modified' in fields:
@@ -55,6 +60,19 @@ def model(request, app, model):
                     # Modify last_modified field to suit persistence.sync.js.
                     last_modified = getattr(instance, field.name)
                     update['_lastChange'] = to_epoch(last_modified)
+                elif type(field) == DecimalField:
+                    value = getattr(instance, field.name)
+                    if value:
+                        update[field.name] = float(value)
+                    else:
+                        update[field.name] = None
+                elif ((type(field) == ForeignKey) or
+                      (type(field) == OneToOneField)):
+                    foreign = getattr(instance, field.name)
+                    if foreign:
+                        update[field.name] = persistence_id(instance=foreign)
+                    else:
+                        update[field.name] = None
                 else:
                     update[field.name] = getattr(instance, field.name)
             update['id'] = persistence_id(instance=instance)

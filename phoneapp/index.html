@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang='en' >
+  <head>
+    <title>jQuery mobile / persistencejs integration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
+    <style>
+      .ui-mobile #jqm-home {  background: #e5e5e5 url(assets/jqm-sitebg.png) top center repeat-x; }
+      .ui-mobile #jqm-homeheader { padding: 55px 25px 0; text-align: center }
+      .ui-mobile #jqm-homeheader h1 { margin: 0 0 10px; }
+      .ui-mobile #jqm-homeheader p { margin: 0; }
+      .ui-mobile #jqm-version { text-indent: -99999px; background: url(assets/version.png) top right no-repeat; width: 119px; height: 122px; overflow: hidden; position: absolute; top: 0; right: 0; }
+      .ui-mobile .jqm-themeswitcher { clear: both; margin: 20px 0 0; }
+
+      h2 { margin-top:1.5em; }
+      p code { font-size:1.2em; font-weight:bold; }
+
+      dt { font-weight: bold; margin: 2em 0 .5em; }
+      dt code, dd code { font-size:1.3em; line-height:150%; }
+    </style>
+    <!-- CDN version -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+    <!--
+    <link rel="stylesheet" href="/site_media/phoneapp/css/jquery.mobile-1.0.min.css" />
+    <script src="/site_media/phoneapp/js/jquery-1.7.1.min.js"></script>
+    <script src="/site_media/phoneapp/js/jquery.mobile-1.0.min.js"></script>
+    -->
+    <script src="/site_media/phoneapp/js/jquery.tmpl.min.js"></script>
+    <script src="/site_media/phoneapp/js/persistence.js"></script>
+    <script src="/site_media/phoneapp/js/persistence.sync.js"></script>
+    <script src="/site_media/phoneapp/js/persistence.store.sql.js"></script>
+    <script src="/site_media/phoneapp/js/persistence.store.websql.js"></script>
+    <script src="/site_media/phoneapp/js/persistence.store.memory.js"></script>
+    <script src="/site_media/phoneapp/js/jtl.js"></script>
+    <script src="/site_media/phoneapp/js/productsdb.schema.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('#reset').click(function() {
+          persistence.reset();
+          persistence.schemaSync();
+          alert("Database reset.");
+          return false;
+        });
+        $('#sync').click(function() {
+          productsdb.sync();
+          return false;
+        });
+        $('.item-list').click(function() {
+          productsdb.itemList(this.id);
+          return false;
+        });
+        $('.item-detail').click(function() {
+          productsdb.itemDetail(this.id);
+          return false;
+        });
+      });
+      
+    </script>
+  </head>
+  <body>
+
+    <div data-role="page" id="home">
+      <div data-role="header">
+	<h1>ProductsDB</h1>
+      </div>
+      <div data-role="content">
+	<!-- <span id="status"><h3>Idle.</h3></span> -->
+	<ul data-role="listview" data-inset="true">
+	  <li data-role="list-divider">Overview</li> 
+	  <li><a href="#browse">Browse database</a></li>	
+	  <li><a id="sync" href="#">Synchronize database</a></li> 
+	  <li><a id="reset" href="#">Reset database</a></li> 
+	</ul>
+      </div>
+    </div>
+
+    <div data-role="page" id="browse">
+      <div data-role="header">
+        <h1>Browse database</h1>
+      </div>
+      <div data-role="content">
+	<ul data-role="listview" data-inset="true"> 
+	  <li data-role="list-divider">Overview</li> 
+	  <li><a class="item-list" id="Formulation" href="#">Formulations</a></li> 
+	  <li><a class="item-list" id="Product" href="#">Products</a></li>	
+	  <li><a class="item-list" id="Supplier" href="#">Suppliers</a></li>	
+	  <li><a class="item-list" id="Manufacturer" href="#">Manufacturers</a></li>	
+	</ul>
+      </div>
+    </div>
+
+    <div data-role="page" id="list">
+      <div data-role="header">
+        <h1>Empty list</h1>
+      </div>
+      <div data-role="content">
+	<p>Whoops, there is no content here. Something failed.</p>
+      </div>
+    </div>
+
+    <div data-role="page" id="detail">
+      <div data-role="header">
+        <h1>Empty detail</h1>
+      </div>
+      <div data-role="content">
+	<p>Whoops, there is no content here. Something failed.</p>
+      </div>
+    </div>
+
+    <div data-role="page" id="form_submission">
+      <div data-role="content">
+        <form action="order/form-fake-response.html" method="post">
+          <fieldset>
+            <div data-role="fieldcontain">
+              <label for="shipping" class="select">Formsubmission (GET):</label>
+              <select name="shipping" id="shipping">
+                <option value="Standard shipping">Standard: 7 day</option>
+                <option value="Rush shipping">Rush: 3 days</option>
+                <option value="Express shipping">Express: next day</option>
+                <option value="Overnight shipping">Overnight</option>
+              </select>
+            </div>
+          <button type="submit" data-theme="a">Submit</button>
+        </fieldset>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
