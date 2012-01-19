@@ -1,11 +1,12 @@
-<div data-role="header">
-  <h1>Suppliers</h1>
-</div>
-<div data-role="content">
-  <p>This is a list of suppliers. Look closely. Can't you see them?</p>
-  <ul>
-    {%for supplier in supplier-list%}
-    <li>{{supplier.name}}</li>
-    {%endfor%}
-  </ul>
+<div data-role="page" id="supplier-list">
+  <div data-role="header">
+    <h1>Suppliers</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview">
+      {%for supplier in supplier-list%}
+      <li><a class="item-detail" data-model="Supplier" data-id="{{supplier.id}}" href="#">{{supplier.name}}</a></li>
+      {%endfor%}
+    </ul>
+  </div>
 </div>

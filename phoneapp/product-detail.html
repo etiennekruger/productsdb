@@ -1,0 +1,17 @@
+<div data-role="page" id="product-detail" data-id="{{id}}">
+  <div data-role="header">
+    <h1>{{name}}</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview">
+      <li>Formulation: {{formulation.name}}</li>
+      <li>INN (generic molecule name): {{formulation.generic_name}}</li>
+      <li>WHO Prequalified: {%if who_prequalified%}Yes{%else%}No{%endif%}</li>
+      <li>Strength: {{strength}}</li>
+      <li>Packaging: {{packaging}}</li>
+      <li>Unit of issue: {{unit_of_issue}}</li>
+      <li><a class="item-detail" data-model="Formulation" data-id="{{formulation.id}}" href="#">Formulation</a></li>
+      <li><a class="item-list" data-model="ProductRegistration" data-related="product" data-related-id="{{id}}" href="#">Registrations</a></li>
+    </ul>
+  </div>
+</div>

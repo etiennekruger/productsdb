@@ -1,0 +1,18 @@
+<div data-role="page" id="registration-detail" data-id="{{id}}">
+  <div data-role="header">
+    <h1>{{repr}}</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview">
+      {%if product%}
+      <li><a class="item-detail" data-model="Product" data-id="{{product.id}}" href="#">Product: {{product.name}}</a></li>
+      {%endif%}
+      {%if supplier%}
+      <li><a class="item-detail" data-model="Supplier" data-id="{{supplier.id}}" href="#">Supplier: {{supplier.name}}</a></li>
+      {%endif%}
+      {%if manufacturer%}
+      <li><a class="item-detail" data-model="Manufacturer" data-id="{{manufacturer.id}}" href="#">Manufacturer: {{manufacturer.name}}</a></li>
+      {%endif%}
+    </ul>
+  </div>
+</div>

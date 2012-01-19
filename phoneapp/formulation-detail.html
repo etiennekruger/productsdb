@@ -1,0 +1,12 @@
+<div data-role="page" id="formulation-detail" data-id="{{id}}">
+  <div data-role="header">
+    <h1>{{name}}</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview">
+      <li>INN (generic molecule name): {{generic_name}}</li>
+      <li>Strength: {{strength}}</li>
+      <li><a class="item-list" data-model="Product" data-related="formulation" data-related-id="{{id}}" href="#">Products</a></li>
+    </ul>
+  </div>
+</div>

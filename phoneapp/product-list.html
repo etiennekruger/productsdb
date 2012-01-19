@@ -1,11 +1,12 @@
-<div data-role="header">
-  <h1>Products</h1>
-</div>
-<div data-role="content">
-  <p>This is a list of products. Look closely. Can't you see them?</p>
-  <ul data-role="listview">
-    {%for product in product-list%}
-    <li><a class="item-detail" id="{{product.id}}" href="#">{{product.name}}</a></li>
-    {%endfor%}
-  </ul>
+<div data-role="page" id="product-list">
+  <div data-role="header">
+    <h1>Products</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview">
+      {%for product in product-list%}
+      <li><a class="item-detail" data-model="Product" data-id="{{product.id}}" href="#">{{product.name}}</a></li>
+      {%endfor%}
+    </ul>
+  </div>
 </div>

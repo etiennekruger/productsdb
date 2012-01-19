@@ -1,11 +1,12 @@
-<div data-role="header">
-  <h1>Formulations</h1>
-</div>
-<div data-role="content">
-  <p>This is a list of formulations. Look closely. Can't you see them?</p>
-  <ul>
-    {%for formulation in formulation-list%}
-    <li>{{formulation.name}}</li>
-    {%endfor%}
-  </ul>
+<div data-role="page" id="formulation-list">
+  <div data-role="header">
+    <h1>Formulations</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview">
+      {%for formulation in formulation-list%}
+      <li><a class="item-detail" data-model="Formulation" data-id="{{formulation.id}}" href="#">{{formulation.name}}</a></li>
+      {%endfor%}
+    </ul>
+  </div>
 </div>

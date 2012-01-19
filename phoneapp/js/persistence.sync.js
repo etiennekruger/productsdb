@@ -180,7 +180,9 @@ persistence.sync.postJSON = function(uri, data, callback) {
               }
               // Step 4: Find local new/updated/removed items (not part of the remote change set)
               Entity.all(session).filter("id", "not in", ids).filter("_lastChange", ">", lastLocalSyncTime).list(function(newItems) {
-                  console.log("New items: ", newItems);
+		  if (persistence.debug) {
+                      console.log("New items: ", newItems);
+		  }
                   newItems.forEach(function(newItem) {
                       var update = { id: newItem.id };
                       for(var p in fieldSpec) {

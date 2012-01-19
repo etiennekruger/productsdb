@@ -1,10 +1,13 @@
+//var SERVER_ROOT = 'http://data.medicinesinfohub.net/';
+var SERVER_ROOT = 'http://localhost:3500/';
+
 if (window.openDatabase) {
     persistence.store.websql.config(persistence, "productsdb", 'database', 5 * 1024 * 1024);
 } else {
     persistence.store.memory.config(persistence);
 };
 
-if (typeof someVar === 'undefined') {
+if (typeof productsdb === 'undefined') {
     productsdb = {}
 };
 
@@ -18,28 +21,28 @@ if (typeof someVar === 'undefined') {
 	generic_name: "TEXT",
 	strength: "TEXT",
     });
-    models.Formulation.enableSync('/sync/infohub/formulation/');
+    models.Formulation.enableSync(SERVER_ROOT+'sync/infohub/formulation/');
     
     models.Country = persistence.define('country', {
 	code: "TEXT",
 	name: "TEXT",
     });
-    models.Country.enableSync('/sync/infohub/country/');
+    models.Country.enableSync(SERVER_ROOT+'sync/infohub/country/');
     
     models.Incoterm = persistence.define('incoterm', {
 	name: "TEXT",
     });
-    models.Incoterm.enableSync('/sync/infohub/incoterm/');
+    models.Incoterm.enableSync(SERVER_ROOT+'sync/infohub/incoterm/');
 
     models.Manufacturer = persistence.define('manufacturer', {
 	name: "TEXT",
     });
-    models.Manufacturer.enableSync('/sync/infohub/manufacturer/');
+    models.Manufacturer.enableSync(SERVER_ROOT+'sync/infohub/manufacturer/');
 
     models.Supplier = persistence.define('supplier', {
 	name: "TEXT",
     });
-    models.Supplier.enableSync('/sync/infohub/supplier/');
+    models.Supplier.enableSync(SERVER_ROOT+'sync/infohub/supplier/');
 
     models.Price = persistence.define('price', {
 	fob_price: "REAL",
@@ -62,14 +65,14 @@ if (typeof someVar === 'undefined') {
     models.Supplier.hasMany('prices', models.Price, 'supplier');
     models.Price.hasOne('incoterm', models.Incoterm, 'prices');
     models.Incoterm.hasMany('prices', models.Price, 'incoterm');
-    models.Price.enableSync('/sync/infohub/price/');
+    models.Price.enableSync(SERVER_ROOT+'sync/infohub/price/');
 
     models.ExchangeRate = persistence.define('exchangerate', {
 	symbol: "TEXT",
 	year: "INT",
 	rate: "REAL",
     });
-    models.ExchangeRate.enableSync('/sync/infohub/exchangerate/')
+    models.ExchangeRate.enableSync(SERVER_ROOT+'sync/infohub/exchangerate/')
     
     models.MSHPrice = persistence.define('mshprice', {
 	period: "INT",
@@ -77,7 +80,7 @@ if (typeof someVar === 'undefined') {
     });
     models.MSHPrice.hasOne('formulation', models.Formulation, 'mshprices');
     models.Formulation.hasMany('mshprices', models.MSHPrice, 'formulation');
-    models.MSHPrice.enableSync('/sync/infohub/mshprice/')
+    models.MSHPrice.enableSync(SERVER_ROOT+'sync/infohub/mshprice/')
 
     models.Product = persistence.define('product', {
 	name: "TEXT",
@@ -87,11 +90,12 @@ if (typeof someVar === 'undefined') {
     });
     models.Product.hasOne('formulation', models.Formulation, 'products');
     models.Formulation.hasMany('products', models.Product, 'formulation');
-    models.Product.enableSync('/sync/infohub/product/')
+    models.Product.enableSync(SERVER_ROOT+'sync/infohub/product/')
 
     models.ProductRegistration = persistence.define('productregistration', {
+	repr: "TEXT",
     });
-    models.ProductRegistration.hasOne('product', models.Product, 'registrations');
+    models.ProductRegistration.hasOne('product', models.Product, 'registration');
     models.Product.hasMany('registrations', models.ProductRegistration, 'product');
     models.ProductRegistration.hasOne('supplier', models.Supplier, 'registrations');
     models.Supplier.hasMany('registrations', models.ProductRegistration, 'supplier');
@@ -99,7 +103,7 @@ if (typeof someVar === 'undefined') {
     models.Country.hasMany('registrations', models.ProductRegistration, 'country');
     models.ProductRegistration.hasOne('manufacturer', models.Manufacturer, 'registrations');
     models.Manufacturer.hasMany('registrations', models.ProductRegistration, 'manufacturer');
-    models.ProductRegistration.enableSync('/sync/infohub/productregistration/')
+    models.ProductRegistration.enableSync(SERVER_ROOT+'sync/infohub/productregistration/')
     
     // Sync the schema to the database.
     productsdb.models = models;
@@ -121,7 +125,6 @@ productsdb.sync = function() {
 		$('#status').html('<h3>Sync: '+ models[index] + '</h3>')
 		model = productsdb.models[models[index]]
 		var callback = arguments.callee;
-		console.log(model)
 		model.syncAll(
 		    persistence.sync.preferRemoteConflictHandler,
 		    function() {
@@ -140,26 +143,195 @@ productsdb.sync = function() {
     })();
 };
 
+
+productsdb.views = {};
+
 // Function to render an item list.
-productsdb.itemList = function(item) {
+productsdb.views.list = function(model, related, related_id) {
     $.mobile.showPageLoadingMsg();
-    template = item.toLowerCase() + '-list.html';
+    $('#'+model.toLowerCase()+'-list').remove();
+    $.mobile.initializePage();
+    template = model.toLowerCase() + '-list.html';
     $.ajax(template).done(function(data) {
 	var t = new Jtl(data);
-	productsdb.models[item].all().list(null, function(items) {
+	var callback = function(items) {
 	    var context = {};
-	    context[item.toLowerCase()+'-list'] = items;
-	    $('#list').html(t.render(context));
-	    $('#list').page();
-	    $.mobile.changePage('#list', 'slide', false, true);
+	    context[model.toLowerCase()+'-list'] = items;
+	    $('#page-body').append(t.render(context));
+	    $.mobile.initializePage();
+	    $('#'+model.toLowerCase()+'-list .item-detail').click(function() {
+		productsdb.views.detail($(this).data('model'), $(this).data('id'));
+		return false;
+            });
+	    $.mobile.changePage('#'+model.toLowerCase()+'-list', 'slide', false, true);
 	    $.mobile.hidePageLoadingMsg();
+	};
+	if (typeof related === 'undefined') {
+	    productsdb.models[model].all().list(null, callback);
+	} else {
+	    productsdb.models[model].all().filter(related,'=',related_id).list(null, callback);
+	};
+    }).fail(function() {
+	$.mobile.hidePageLoadingMsg();
+    });
+};
+
+productsdb.views.detail = function(model, id) {
+    productsdb.views[model.toLowerCase()](id);
+};
+
+// Function to render the details of a product.
+productsdb.views.product = function(id) {
+    var fields = ['id', 'name', 'packaging', 'unit_of_issue', 'who_prequalified', 'formulation.[id, name, generic_name, strength]'];
+    $.mobile.showPageLoadingMsg();
+    $('#product-detail').remove();
+    $.mobile.initializePage();
+    template = 'product-detail.html';
+    $.ajax(template).done(function(data) {
+	var t = new Jtl(data);
+	productsdb.models.Product.load(id, function(item) {
+	    var context = item.selectJSON(fields, function(context) {
+		console.log(context);
+		$('#page-body').append(t.render(context));
+		$.mobile.initializePage();
+		$('#product-detail .item-detail').click(function() {
+		    productsdb.views.detail($(this).data('model'), $(this).data('id'));
+		    return false;
+		});
+		$('#product-detail .item-list').click(function() {
+		    productsdb.views.list($(this).data('model'), $(this).data('related'), $(this).data('related-id'));
+		    return false;
+		});
+		$.mobile.changePage('#product-detail', 'slide', false, true);
+		$.mobile.hidePageLoadingMsg();		
+	    });
 	});
     }).fail(function() {
 	$.mobile.hidePageLoadingMsg();
     });
 };
 
-// Function to render the details of an item.
-productsdb.itemDetail = function(item) {
-    alert(item);
+// Function to render the details of a formulation.
+productsdb.views.formulation = function(id) {
+    var fields = ['id', 'name', 'generic_name', 'strength'];
+    $.mobile.showPageLoadingMsg();
+    $('#formulation-detail').remove();
+    $.mobile.initializePage();
+    template = 'formulation-detail.html';
+    $.ajax(template).done(function(data) {
+	var t = new Jtl(data);
+	productsdb.models.Formulation.load(id, function(item) {
+	    item.selectJSON(fields, function(context) {
+		console.log(context);
+		$('#page-body').append(t.render(context));
+		$.mobile.initializePage();
+		$('#formulation-detail .item-detail').click(function() {
+		    productsdb.views.detail($(this).data('model'), $(this).data('id'));
+		    return false;
+		});
+		$('#formulation-detail .item-list').click(function() {
+		    productsdb.views.list($(this).data('model'), $(this).data('related'), $(this).data('related-id'));
+		    return false;
+		});
+		$.mobile.changePage('#formulation-detail', 'slide', false, true);
+		$.mobile.hidePageLoadingMsg();		
+	    });
+	});
+    }).fail(function() {
+	$.mobile.hidePageLoadingMsg();
+    });
+};
+
+
+// Function to render the details of a supplier.
+productsdb.views.supplier = function(id) {
+    var fields = ['id', 'name'];
+    $.mobile.showPageLoadingMsg();
+    $('#supplier-detail').remove();
+    $.mobile.initializePage();
+    template = 'supplier-detail.html';
+    $.ajax(template).done(function(data) {
+	var t = new Jtl(data);
+	productsdb.models.Supplier.load(id, function(item) {
+	    item.selectJSON(fields, function(context) {
+		console.log(context);
+		$('#page-body').append(t.render(context));
+		$.mobile.initializePage();
+		$('#supplier-detail .item-detail').click(function() {
+		    productsdb.views.detail($(this).data('model'), $(this).data('id'));
+		    return false;
+		});
+		$('#supplier-detail .item-list').click(function() {
+		    productsdb.views.list($(this).data('model'), $(this).data('related'), $(this).data('related-id'));
+		    return false;
+		});
+		$.mobile.changePage('#supplier-detail', 'slide', false, true);
+		$.mobile.hidePageLoadingMsg();		
+	    });
+	});
+    }).fail(function() {
+	$.mobile.hidePageLoadingMsg();
+    });
+};
+
+// Function to render the details of a manufacturer.
+productsdb.views.manufacturer = function(id) {
+    var fields = ['id', 'name'];
+    $.mobile.showPageLoadingMsg();
+    $('#manufacturer-detail').remove();
+    $.mobile.initializePage();
+    template = 'manufacturer-detail.html';
+    $.ajax(template).done(function(data) {
+	var t = new Jtl(data);
+	productsdb.models.Manufacturer.load(id, function(item) {
+	    item.selectJSON(fields, function(context) {
+		console.log(context);
+		$('#page-body').append(t.render(context));
+		$.mobile.initializePage();
+		$('#manufacturer-detail .item-detail').click(function() {
+		    productsdb.views.detail($(this).data('model'), $(this).data('id'));
+		    return false;
+		});
+		$('#manufacturer-detail .item-list').click(function() {
+		    productsdb.views.list($(this).data('model'), $(this).data('related'), $(this).data('related-id'));
+		    return false;
+		});
+		$.mobile.changePage('#manufacturer-detail', 'slide', false, true);
+		$.mobile.hidePageLoadingMsg();		
+	    });
+	});
+    }).fail(function() {
+	$.mobile.hidePageLoadingMsg();
+    });
+};
+
+// Function to render the details of a product registration.
+productsdb.views.productregistration = function(id) {
+    var fields = ['id', 'repr', 'product.[name, id]', 'supplier.[name, id]', 'manufacturer.[name, id]'];
+    $.mobile.showPageLoadingMsg();
+    $('#registration-detail').remove();
+    $.mobile.initializePage();
+    template = 'productregistration-detail.html';
+    $.ajax(template).done(function(data) {
+	var t = new Jtl(data);
+	productsdb.models.ProductRegistration.load(id, function(item) {
+	    item.selectJSON(fields, function(context) {
+		console.log(context);
+		$('#page-body').append(t.render(context));
+		$.mobile.initializePage();
+		$('#registration-detail .item-detail').click(function() {
+		    productsdb.views.detail($(this).data('model'), $(this).data('id'));
+		    return false;
+		});
+		$('#registration-detail .item-list').click(function() {
+		    productsdb.views.list($(this).data('model'), $(this).data('related'), $(this).data('related-id'));
+		    return false;
+		});
+		$.mobile.changePage('#registration-detail', 'slide', false, true);
+		$.mobile.hidePageLoadingMsg();		
+	    });
+	});
+    }).fail(function() {
+	$.mobile.hidePageLoadingMsg();
+    });
 };

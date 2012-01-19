@@ -76,6 +76,7 @@ def model(request, app, model):
                 else:
                     update[field.name] = getattr(instance, field.name)
             update['id'] = persistence_id(instance=instance)
+            update['repr'] = unicode(instance).encode('ascii', 'ignore')
             updates.append(update)
         # Deleted items get added only if no 'since' given. This ensures
         # that they are ignored for initial syncs.

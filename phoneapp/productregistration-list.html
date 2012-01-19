@@ -1,0 +1,12 @@
+<div data-role="page" id="productregistration-list">
+  <div data-role="header">
+    <h1>Registrations</h1>
+  </div>
+  <div data-role="content">
+    <ul data-role="listview">
+      {%for registration in productregistration-list%}
+      <li><a class="item-detail" data-model="ProductRegistration" data-id="{{registration.id}}" href="#">{{registration.repr}}</a></li>
+      {%endfor%}
+    </ul>
+  </div>
+</div>

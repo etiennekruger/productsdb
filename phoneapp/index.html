@@ -27,20 +27,20 @@
     <script src="/site_media/phoneapp/js/jquery-1.7.1.min.js"></script>
     <script src="/site_media/phoneapp/js/jquery.mobile-1.0.min.js"></script>
     -->
-    <script src="/site_media/phoneapp/js/jquery.tmpl.min.js"></script>
-    <script src="/site_media/phoneapp/js/persistence.js"></script>
-    <script src="/site_media/phoneapp/js/persistence.sync.js"></script>
-    <script src="/site_media/phoneapp/js/persistence.store.sql.js"></script>
-    <script src="/site_media/phoneapp/js/persistence.store.websql.js"></script>
-    <script src="/site_media/phoneapp/js/persistence.store.memory.js"></script>
-    <script src="/site_media/phoneapp/js/jtl.js"></script>
-    <script src="/site_media/phoneapp/js/productsdb.schema.js"></script>
+    <script src="js/jquery.tmpl.min.js"></script>
+    <script src="js/persistence.js"></script>
+    <script src="js/persistence.sync.js"></script>
+    <script src="js/persistence.store.sql.js"></script>
+    <script src="js/persistence.store.websql.js"></script>
+    <script src="js/persistence.store.memory.js"></script>
+    <script src="js/jtl.js"></script>
+    <script src="js/productsdb.schema.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         $('#reset').click(function() {
           persistence.reset();
           persistence.schemaSync();
-          alert("Database reset.");
+          alert('Database reset.');
           return false;
         });
         $('#sync').click(function() {
@@ -48,18 +48,20 @@
           return false;
         });
         $('.item-list').click(function() {
-          productsdb.itemList(this.id);
+          productsdb.views.list($(this).data('model'));
           return false;
         });
+        /*
         $('.item-detail').click(function() {
-          productsdb.itemDetail(this.id);
+          productsdb.views.detail($(this).data('model'), $(this).data('id'));
           return false;
         });
+        */
       });
       
     </script>
   </head>
-  <body>
+  <body id="page-body">
 
     <div data-role="page" id="home">
       <div data-role="header">
@@ -83,49 +85,13 @@
       <div data-role="content">
 	<ul data-role="listview" data-inset="true"> 
 	  <li data-role="list-divider">Overview</li> 
-	  <li><a class="item-list" id="Formulation" href="#">Formulations</a></li> 
-	  <li><a class="item-list" id="Product" href="#">Products</a></li>	
-	  <li><a class="item-list" id="Supplier" href="#">Suppliers</a></li>	
-	  <li><a class="item-list" id="Manufacturer" href="#">Manufacturers</a></li>	
+	  <li><a class="item-list" data-model="Formulation" href="#">Formulations</a></li> 
+	  <li><a class="item-list" data-model="Product" href="#">Products</a></li>	
+	  <li><a class="item-list" data-model="Supplier" href="#">Suppliers</a></li>	
+	  <li><a class="item-list" data-model="Manufacturer" href="#">Manufacturers</a></li>	
 	</ul>
       </div>
     </div>
 
-    <div data-role="page" id="list">
-      <div data-role="header">
-        <h1>Empty list</h1>
-      </div>
-      <div data-role="content">
-	<p>Whoops, there is no content here. Something failed.</p>
-      </div>
-    </div>
-
-    <div data-role="page" id="detail">
-      <div data-role="header">
-        <h1>Empty detail</h1>
-      </div>
-      <div data-role="content">
-	<p>Whoops, there is no content here. Something failed.</p>
-      </div>
-    </div>
-
-    <div data-role="page" id="form_submission">
-      <div data-role="content">
-        <form action="order/form-fake-response.html" method="post">
-          <fieldset>
-            <div data-role="fieldcontain">
-              <label for="shipping" class="select">Formsubmission (GET):</label>
-              <select name="shipping" id="shipping">
-                <option value="Standard shipping">Standard: 7 day</option>
-                <option value="Rush shipping">Rush: 3 days</option>
-                <option value="Express shipping">Express: next day</option>
-                <option value="Overnight shipping">Overnight</option>
-              </select>
-            </div>
-          <button type="submit" data-theme="a">Submit</button>
-        </fieldset>
-        </form>
-      </div>
-    </div>
   </body>
 </html>

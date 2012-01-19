@@ -191,4 +191,4 @@ class ProductRegistration(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.product, self.country)
+        return u"%s (%s)" % (self.product, self.country)
