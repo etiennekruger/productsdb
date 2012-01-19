@@ -1,5 +1,5 @@
-//var SERVER_ROOT = 'http://data.medicinesinfohub.net/';
-var SERVER_ROOT = 'http://localhost:3500/';
+var SERVER_ROOT = 'http://data.medicinesinfohub.net/';
+//var SERVER_ROOT = 'http://localhost:3500/';
 
 if (window.openDatabase) {
     persistence.store.websql.config(persistence, "productsdb", 'database', 5 * 1024 * 1024);
