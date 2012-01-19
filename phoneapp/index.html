@@ -38,9 +38,10 @@
     <script type="text/javascript">
       $(document).ready(function() {
         $('#reset').click(function() {
-          persistence.reset();
-          persistence.schemaSync();
-          alert('Database reset.');
+          persistence.reset( function() {
+            persistence.schemaSync();
+            alert('Database reset.');
+          });
           return false;
         });
         $('#sync').click(function() {
