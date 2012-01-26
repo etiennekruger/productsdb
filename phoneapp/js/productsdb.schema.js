@@ -36,11 +36,17 @@ if (typeof productsdb === 'undefined') {
 
     models.Manufacturer = persistence.define('manufacturer', {
 	name: "TEXT",
+	address: "TEXT",
+	email: "TEXT",
+	phone: "TEXT",
     });
     models.Manufacturer.enableSync(SERVER_ROOT+'sync/infohub/manufacturer/');
 
     models.Supplier = persistence.define('supplier', {
 	name: "TEXT",
+	address: "TEXT",
+	email: "TEXT",
+	phone: "TEXT",
     });
     models.Supplier.enableSync(SERVER_ROOT+'sync/infohub/supplier/');
 
@@ -245,7 +251,7 @@ productsdb.views.formulation = function(id) {
 
 // Function to render the details of a supplier.
 productsdb.views.supplier = function(id) {
-    var fields = ['id', 'name'];
+    var fields = ['id', 'name', 'address', 'email', 'phone'];
     $.mobile.showPageLoadingMsg();
     $('#supplier-detail').remove();
     $.mobile.initializePage();
@@ -276,7 +282,7 @@ productsdb.views.supplier = function(id) {
 
 // Function to render the details of a manufacturer.
 productsdb.views.manufacturer = function(id) {
-    var fields = ['id', 'name'];
+    var fields = ['id', 'name', 'address', 'email', 'phone'];
     $.mobile.showPageLoadingMsg();
     $('#manufacturer-detail').remove();
     $.mobile.initializePage();

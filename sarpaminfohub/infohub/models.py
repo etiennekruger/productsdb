@@ -38,24 +38,30 @@ class Country(models.Model):
 class Incoterm(models.Model):
     name = models.CharField(max_length=200)
     last_modified = models.DateTimeField(auto_now=True)
-
+    
     def __unicode__(self):
         return self.name
     
 class Manufacturer(models.Model):
     name = models.CharField(max_length=200)
+    address = models.CharField(max_length=200, blank=True, default='')
+    email = models.CharField(max_length=200, blank=True, default='')
+    phone = models.CharField(max_length=200, blank=True, default='')
     last_modified = models.DateTimeField(auto_now=True)
-
+    
     def get_record(self):
         record = {}
         record['name'] = self.name
         return record
-
+    
     def __unicode__(self):
         return self.name
 
 class Supplier(models.Model):
     name = models.CharField(max_length=200)
+    address = models.CharField(max_length=200, blank=True, default='')
+    email = models.CharField(max_length=200, blank=True, default='')
+    phone = models.CharField(max_length=200, blank=True, default='')
     last_modified = models.DateTimeField(auto_now=True)
 
     def get_url(self):

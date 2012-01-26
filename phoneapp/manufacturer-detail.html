@@ -1,9 +1,12 @@
-<div data-role="page" id="manufacturer-detail" data-id="{{id}}">
-  <div data-role="header">
+<div data-role="page" data-theme="c" id="manufacturer-detail" data-id="{{id}}">
+  <div data-role="header" data-theme="b">
     <h1>{{name}}</h1>
   </div>
   <div data-role="content">
     <ul data-role="listview">
+      <li>Address: {{address}}</li>
+      <li>Email: {{email}}</li>
+      <li>Phone: {{phone}}</li>
       <li><a class="item-list" data-model="ProductRegistration" data-related="manufacturer" data-related-id="{{id}}" href="#">Registrations</a></li>
     </ul>
   </div>
