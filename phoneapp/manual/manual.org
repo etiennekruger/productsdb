@@ -1,0 +1,44 @@
+ProductsDB Mobile - User Manual
+#+STARTUP: inlineimages
+* ProductsDB Mobile
+
+** Introduction
+The ProductsDB Mobile application allows procurement officers (and any other person) to access data about the availability of medicines in the SADC region directly from their mobile device.
+
+** Usage
+*** Registration
+When first accessing the mobile application it will be required to register the mobile device. The information provided will not be made available to third parties and is only used to quantify usage of the application.
+
+Fill in the form presented and press 'Register'.
+
+[[screenshots/register1.png]] [[screenshots/register2.png]]
+
+*** Main menu
+After registration it is possible to access the main menu of the mobile application.
+
+[[screenshots/menu.png]]
+
+The '*Browse database*' option allows the user to view all the data contained in the pharmaceutical database. It will be discussed in a separate topic.
+
+The application keeps a local database of pharmaceutical information. This database has to be kept up to date with the most recent changes in the information. The '*Synchronize database*' option will synchronize the local database to the central database through the Internet. Make sure to synchronize often when an Internet connection is available.
+
+The '*Reset database*' will clear the local database of all data. A subsequent synchronization will fill the database up again. This option is useful if the local database has become corrupt, and should only be used if the data seems inaccurate, or the application gives unexpected errors.
+
+*** Browse database
+Upon selection of the '*Browse database*' option from the main menu the following screen will appear.
+
+[[screenshots/browse.png]]
+
+The options from the browse screen will show a list of items in the database when selected.
+
+[[screenshots/supplier-list.png]]
+
+Selecting an option from the list will show the detailed information for the selected item.
+
+[[screenshots/supplier-detail.png]]
+
+Related data can be accessed by selecting the relevant option from the detailed information screen.
+
+** Further information
+
+For further information contact [[mailto:someone@sarpam.net][Someone At SARPAM]].
