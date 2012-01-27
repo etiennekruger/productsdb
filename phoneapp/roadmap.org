@@ -1,0 +1,9 @@
+* ProductsDB - Development Roadmap
+
+- Improve usage monitoring system - Monitor usage of specific resources.
+- Make database synchronization happen automatically in the background.
+- Add a search function for items in the database.
+- Add a news screen with the latest articles from the server on the Internet.
+- Add the ability for users of the mobile application to send feedback from the application.
+- Package the application in a locally installable form for major smartphone platforms.
+- Improve search functionality to include more advanced search terms.
